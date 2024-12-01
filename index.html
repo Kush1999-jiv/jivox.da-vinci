@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Selection Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9fafc;
+        }
+        header {
+            background-color: #004080;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.8rem;
+        }
+        header img {
+            height: 30px;
+            width: auto;
+            margin: 0 10px;
+            vertical-align: middle;
+            horizontal-align: left;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2, h3 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .decision-tree, .recommendations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+.templates {
+    display: flex; /* Use flexbox for alignment */
+    flex-wrap: wrap; /* Allow wrapping if needed */
+    justify-content: center; /* Horizontally center the items */
+    align-items: center; /* Vertically center the items */
+    gap: 20px; /* Add spacing between items */
+}
+
+        .filter, .recommendation, .template-card {
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .filter:hover, .recommendation:hover, .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin: 10px 0;
+            font-size: 1rem;
+            color: #4a5568;
+        }
+        button {
+            background-color: #004080;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0066cc;
+        }
+        .template-card img, .recommendation img {
+            max-width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .template-details {
+            font-size: 0.9rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        footer {
+            background-color: #004080;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 30px;
+        }
+        .instructions {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 1rem;
+            color: #555;
+        }
+   
+.action-buttons {
+    display: flex; /* Use flexbox for layout */
+    justify-content: center; /* Center the buttons horizontally */
+    gap: 20px; /* Add equal spacing between buttons */
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    margin-bottom: 20px; /* Add spacing below the button row */
+}
+
+.action-buttons button {
+    background-color: #004080;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+        .action-buttons button:hover {
+            background-color: #0066cc;
+        }
+        .action-description {
+            text-align: center;
+            font-size: 1rem;
+            color: #555;
+            margin-top: 10px;
+        }
+        .search-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-bar {
+            width: 80%;
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+.collapsible {
+    background-color: #004080;
+    color: white;
+    cursor: pointer;
+    padding: 15px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    margin: 0 0 10px 0; /* Adds space between buttons */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+
+.active, .collapsible:hover {
+    background-color: #0066cc;
+}
+
+.collapsible:after {
+    content: '\25BC'; /* Down arrow */
+    font-size: 1rem;
+    float: right;
+    color: white;
+}
+
+.collapsible.active:after {
+    content: '\25B2'; /* Up arrow */
+}
+
+.contentx {
+    padding: 15px;
+    display: none;
+    overflow: hidden;
+    background-color: #f9f9f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 5px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    margin: 0; /* Reset any margins */
+    width: 100%; /* Full width */
+    box-sizing: border-box; /* Include padding and border in the width */
+}
+        #recommendations-section {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://getlogo.net/wp-content/uploads/2021/03/jivox-corporation-logo-vector.png" alt="Jivox Logo"> Accelerate Campaigns with Smart Template Selection<img src="https://jivox.com/wp-content/uploads/2024/03/iq-davinci-logo-1.png" alt="DaVinci Logo">
+    </header>
+    <div class="container">
+        <!-- Skip Steps Section -->
+<button type="button" class="collapsible">Quick Access: Access saved, previously used templates, or let AI suggest top matches based on your inspiration</button>
+<div class="contentx">
+        <div class="action-buttons">
+            <button onclick="viewSavedTemplates()">View Saved Templates</button>
+            <button onclick="viewPreviouslyUsed()">Previously Used Templates</button>
+	    <button onclick="topTemplates()">Top Performing Templates</button>
+            <button onclick="uploadTemplate()">Upload Inspiration & Find Templates</button>
+        </div>
+        <div class="action-description">
+            <p>
+                Save time by revisiting your previously saved templates or let AI help you find the closest match to an idea you have in mind by uploading a photo or design.
+            </p>
+        </div>
+</div>
+<br>
+        <button type="button" class="collapsible">Filter Templates: Refine options by campaign goals, platforms, and ad formats to match your needs</button>
+<div class="contentx">
+
+        <h2>Step 1: Select Campaign Parameters</h2>
+        <div class="instructions">
+            Use the search bar or filters below to find templates that match your requirements.
+        </div>
+
+        <!-- Search and Filter Section -->
+        <div class="search-container">
+            <input
+                type="text"
+                class="search-bar"
+                id="searchBar"
+                placeholder="Search for templates..."
+                onkeypress="showMockup(event)"
+            />
+        </div>
+
+        <!-- Decision-Tree Section -->
+        <div class="section" id="decision-tree">
+            <div class="decision-tree">
+                <!-- Campaign Goal -->
+                <div class="filter">
+                    <h3>Campaign Goal</h3>
+                    <label><input type="checkbox" value="retargeting" class="campaignGoal"> Retargeting</label>
+                    <label><input type="checkbox" value="whole-funnel" class="campaignGoal"> Whole Funnel</label>
+                    <label><input type="checkbox" value="awareness" class="campaignGoal"> Awareness</label>
+                </div>
+                <!-- Platform -->
+                <div class="filter">
+                    <h3>Platform</h3>
+                    <label><input type="checkbox" value="social-media" class="platform"> Social Media</label>
+                    <label><input type="checkbox" value="connected-tv" class="platform"> Connected TV</label>
+                    <label><input type="checkbox" value="email" class="platform"> Email</label>
+                </div>
+                <!-- Ad Format -->
+                <div class="filter">
+                    <h3>Ad Format</h3>
+                    <label><input type="checkbox" value="banner" class="adFormat"> Banner</label>
+                    <label><input type="checkbox" value="video" class="adFormat"> Video</label>
+                    <label><input type="checkbox" value="carousel" class="adFormat"> Carousel</label>
+                </div>
+                <!-- Sizes -->
+                <div class="filter">
+                    <h3>Sizes</h3>
+                    <label><input type="checkbox" value="300x250" class="size"> 300x250</label>
+                    <label><input type="checkbox" value="728x90" class="size"> 728x90</label>
+                    <label><input type="checkbox" value="160x600" class="size"> 160x600</label>
+                    <label><input type="checkbox" value="300x600" class="size"> 300x600</label>
+                </div>
+                <!-- Industry -->
+                <div class="filter">
+                    <h3>Industry</h3>
+                    <label><input type="checkbox" value="retail" class="industry"> Retail</label>
+                    <label><input type="checkbox" value="automotive" class="industry"> Automotive</label>
+                    <label><input type="checkbox" value="travel" class="industry"> Travel</label>
+                    <label><input type="checkbox" value="fashion" class="industry"> Fashion</label>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="generateRecommendations()">Show Recommendations</button>
+            </div>
+        </div>
+
+        <!-- AI Recommendations Section -->
+        <div class="section" id="recommendations-section">
+            <h2>Step 2: AI Recommendations</h2>
+            <div class="recommendations" id="recommendations">
+                <!-- AI-based recommendations will be dynamically populated here -->
+            </div>
+        </div>
+</div>
+ <button type="button" class="collapsible">Explore All: Browse the entire library of templates for a full view of options</button>
+<div class="contentx">
+
+        <!-- Template Library Section -->
+        <div class="section" id="template-library-section">
+            <h2>Browse All Templates</h2>
+            <div class="templates" id="templateLibrary">
+                <!-- Templates will be dynamically filtered and displayed here -->
+            </div>
+        </div>
+    </div>
+</div>
+    <footer>
+        Jivox IQ DaVinci © 2024
+    </footer>
+
+    <script>
+        // Template data with various attributes
+        const templates = [
+            {
+                id: 1,
+                name: "Retail Carousel Ad",
+                campaignGoal: ["retargeting"],
+                platform: ["social-media"],
+                adFormat: ["carousel"],
+                size: ["300x250"],
+                industry: ["retail"],
+                imageUrl: "https://edit.org/img/blog/xlh-1024-fashion-store-poster-grand-opening.webp",
+                description: "Engaging carousel ad for retail products"
+            },
+            {
+                id: 2,
+                name: "Automotive Video Ad",
+                campaignGoal: ["awareness"],
+                platform: ["connected-tv"],
+                adFormat: ["video"],
+                size: ["728x90"],
+                industry: ["automotive"],
+                imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxIY25Pzz6AvcOsui9Xir_avEBbTi9Og3ajg&s",
+                description: "Dynamic video ad for automotive brands"
+            },
+            {
+                id: 3,
+                name: "Travel Banner Ad",
+                campaignGoal: ["whole-funnel"],
+                platform: ["social-media"],
+                adFormat: ["banner"],
+                size: ["160x600"],
+                industry: ["travel"],
+                imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ2fMxRhIcW3jl1KCB949zeJBgVHiV89XvmA&s",
+                description: "Compelling banner ad for travel experiences"
+            },
+            {
+                id: 4,
+                name: "Fashion Email Campaign",
+                campaignGoal: ["retargeting"],
+                platform: ["email"],
+                adFormat: ["banner"],
+                size: ["300x600"],
+                industry: ["fashion"],
+                imageUrl: "https://unlayer.com/_next/image?url=https%3A%2F%2Fimages.ctfassets.net%2Feut50lk49cau%2F58AEKY9cTHEZuUIvy2h8aO%2F202e61c4dcd96fc8088f3063e799ff0d%2F617791c6379656fd96efdf44_IDlkmDl7Q3I_jXLnvRjxabDXghLUyvm8NCo2KVHRW6H-jzjLo950HglhmiOcPahg_O1zSoSdgGOqSlLWbA9vQY_ryTK9hINmRI.jpeg&w=1200&q=75",
+                description: "Stylish email campaign for fashion brands"
+            }
+        ];
+
+        function showMockup(event) {
+            if (event.key === "Enter") {
+                alert("This is just a mockup for search functionality.");
+                event.target.value = ""; // Clear the search bar after the alert
+            }
+        }
+
+        function viewSavedTemplates() {
+            alert("This is just a mockup for viewing saved templates to save time and improve efficiency.");
+        }
+
+        function viewPreviouslyUsed() {
+            alert("This is just a mockup for viewing previously used templates to save time and reuse familiar designs.");
+        }
+
+        function uploadTemplate() {
+            alert("This is just a mockup for uploading a photo or template to find the closest match using AI.");
+        }
+
+function topTemplates() {
+            alert("This is just a mockup for viewing top-performing templates. These designs are optimized to maximize results and save time in campaigns");
+        }
+
+        // Function to generate template cards
+        function createTemplateCard(template) {
+            const card = document.createElement('div');
+            card.className = 'template-card';
+            card.innerHTML = `
+                <img src="${template.imageUrl}" alt="${template.name}">
+                <h3>${template.name}</h3>
+                <div class="template-details">
+                    <p>Campaign Goal: ${template.campaignGoal.join(', ')}</p>
+                    <p>Platform: ${template.platform.join(', ')}</p>
+                    <p>Ad Format: ${template.adFormat.join(', ')}</p>
+                    <p>Size: ${template.size.join(', ')}</p>
+                    <p>Industry: ${template.industry.join(', ')}</p>
+                </div>
+                <button onclick="selectTemplate(${template.id})">Select Template</button>
+            `;
+            return card;
+        }
+
+var coll = document.getElementsByClassName("collapsible");
+var i;
+
+for (i = 0; i < coll.length; i++) {
+  coll[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.display === "block") {
+      content.style.display = "none";
+    } else {
+      content.style.display = "block";
+    }
+  });
+}
+
+        // Function to filter templates based on selected options
+        function generateRecommendations() {
+            const recommendationsSection = document.getElementById('recommendations-section');
+            const recommendationsContainer = document.getElementById('recommendations');
+            
+            // Clear previous recommendations
+            recommendationsContainer.innerHTML = '';
+            
+            // Get selected filter options
+            const selectedGoals = Array.from(document.querySelectorAll('.campaignGoal:checked')).map(el => el.value);
+            const selectedPlatforms = Array.from(document.querySelectorAll('.platform:checked')).map(el => el.value);
+            const selectedFormats = Array.from(document.querySelectorAll('.adFormat:checked')).map(el => el.value);
+            const selectedSizes = Array.from(document.querySelectorAll('.size:checked')).map(el => el.value);
+            const selectedIndustries = Array.from(document.querySelectorAll('.industry:checked')).map(el => el.value);
+            
+            // Filter templates
+            const filteredTemplates = templates.filter(template => {
+                return (selectedGoals.length === 0 || selectedGoals.some(goal => template.campaignGoal.includes(goal))) &&
+                       (selectedPlatforms.length === 0 || selectedPlatforms.some(platform => template.platform.includes(platform))) &&
+                       (selectedFormats.length === 0 || selectedFormats.some(format => template.adFormat.includes(format))) &&
+                       (selectedSizes.length === 0 || selectedSizes.some(size => template.size.includes(size))) &&
+                       (selectedIndustries.length === 0 || selectedIndustries.some(industry => template.industry.includes(industry)));
+            });
+            
+            // Show recommendations section if there are filtered templates
+            if (filteredTemplates.length > 0) {
+                recommendationsSection.style.display = 'block';
+                
+                // Create and append template cards
+                filteredTemplates.forEach(template => {
+                    recommendationsContainer.appendChild(createTemplateCard(template));
+                });
+            } else {
+                recommendationsSection.style.display = 'none';
+                alert('No templates match your selected criteria. Try adjusting your filters.');
+            }
+        }
+
+        // Function to select a template (placeholder for now)
+        function selectTemplate(templateId) {
+            const selectedTemplate = templates.find(template => template.id === templateId);
+            alert(`Selected Template: ${selectedTemplate.name}\nThis is a placeholder for template selection logic.`);
+        }
+
+        // Populate template library on page load
+        function populateTemplateLibrary() {
+            const templateLibrary = document.getElementById('templateLibrary');
+            
+            // Create and append all template cards
+            templates.forEach(template => {
+                templateLibrary.appendChild(createTemplateCard(template));
+            });
+        }
+
+        // Call populate template library when page loads
+        window.onload = populateTemplateLibrary;
+    </script>
+</body>
+</html>
